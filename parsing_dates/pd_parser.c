@@ -7,7 +7,7 @@ const char* pd_string_to_date(const char* input, struct tm *tm)
     return  strptime(input, DATE_FORMAT, tm);
 }
 
-unsigned char pd_date_to_string(char* input, unsigned char size, struct tm *tm)
+unsigned char pd_date_to_string(char* input, const unsigned char size, const struct tm *tm)
 {
     return strftime(input, size, DATE_FORMAT, tm);
 }
