@@ -1,16 +1,18 @@
+#include <time.h>
 #define _XOPEN_SOURCE
 
 #include <stdio.h>
-#include <libnotify/notify.h>
+#include <string.h>
+#include <libnotify/notify.h> 
 #include <libnotify/notification.h>
-#include <time.h>
+#include "parsing_dates/parsing_dates.h"
 
 int main(int argc, char* argv[])
 {
 
     /** 
      * TODO :
-     *      Make date parse and format api
+     *      DONE Make date parse and format api
      *      Make todo list api
      *      Make terminal ui to use todo list
      *      Make notification interface
@@ -27,20 +29,19 @@ int main(int argc, char* argv[])
      */
 
     /* Parsing time to date */
-    /* MM/DD/YY */
+    
 
-    time_t rawtime;
-    struct tm *info;
-    char buffer[80];
+    struct tm tm;
+    char* date = "2022-09-27";
 
-    time(&rawtime);
-    info = localtime(&rawtime);
+    const char* cp = pd_string_to_date(date, &tm);
+    pd_print(&tm);
 
-    int written = strftime(buffer, 80, "%x - %I:%M%p", info);
-    buffer[written] = '\0';
+    return 0;
 
     /* Sending notifications */
 
+    char buffer[10];
     notify_init("Current Time");    
     NotifyNotification* current_time = notify_notification_new("Current Time", buffer, "dialog-information");
 
