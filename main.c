@@ -2,11 +2,17 @@
 #define _XOPEN_SOURCE
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
 #include <string.h>
+#include <unistd.h>
 #include <libnotify/notify.h> 
 #include <libnotify/notification.h>
 #include "parsing_dates/parsing_dates.h"
-
+#include "todos/todos.h"
+char* get_string();
+char* get_n_string(unsigned int n);
+void clear_buffer();
 int main(int argc, char* argv[])
 {
 
@@ -28,14 +34,19 @@ int main(int argc, char* argv[])
      *
      */
 
-    /* Parsing time to date */
+
+    printf("Enter a string\n");
+    char* buff = get_string();
+    printf("%s\n", buff);
+    printf("%lu\n", strlen(buff));
+    free(buff);
+
+    printf("Enter another string\n");
+    buff = get_n_string(20);
+    printf("%s\n", buff);
+    printf("%lu\n", strlen(buff));
+    free(buff);
     
-
-    struct tm tm;
-    char* date = "2022-09-27";
-
-    const char* cp = pd_string_to_date(date, &tm);
-    pd_print(&tm);
 
     return 0;
 
@@ -51,4 +62,70 @@ int main(int argc, char* argv[])
     notify_uninit();
 
     return 0;
+}
+
+void clear_buffer()
+{
+    while(getc(stdin) != '\n');
+}
+char* get_n_string(unsigned int n)
+{
+    char* buffer = malloc(sizeof(char) * n);
+    fgets(buffer, n, stdin);
+    clear_buffer();
+    unsigned long int len = strlen(buffer);
+    if(buffer[len - 1] == '\n')
+        buffer[len - 1] = '\0';
+
+    return buffer;
+
+}
+char* get_string()
+{
+    unsigned char step = 32;
+    unsigned int size = 1; // Add 1 for '\0'
+    char* str = malloc(sizeof(char));
+    char buffer[step]; 
+    ssize_t i;
+    do 
+    {
+        memset(buffer, '\0', step);
+        i = read(STDIN_FILENO, buffer, step);
+        if(i < 0)
+        {
+            printf("Error while reading from stdin");
+            fflush(stdout);
+            break;
+        }
+        else if(i == 0)
+        {
+            // Done 
+            break;
+        }
+        // size = 1, i = 5, size = 6
+        // input: abcde
+        // str: ......
+        // offset 6 - 5 - 1 = 0
+        // memset: 0, 0, 6 (i + 1)
+        // str: 000000
+        // str: abcde\0
+        
+        // size = 6, i = 3,
+        // size = 9,
+        // fg\n
+        // str:abcde\0...
+        // memset: 5, 0, 4
+        // 9 - 3 - 1 = 5
+        // str:abcdefg\n\0
+        
+        size += i;
+        str = realloc(str, sizeof(*str) * size);
+        memset(str + size - i - 1, 0, i + 1);
+        assert(str != NULL);
+        strncat(str, buffer, i);
+        
+    }while (i == step);
+
+    str[strlen(str) - 1] = '\0'; // strlen - 1 is always a new line 
+    return str;
 }
