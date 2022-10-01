@@ -1,9 +1,9 @@
-CFLAGS=-Iparsing_dates -Iio `pkg-config --cflags --libs libnotify`
+CFLAGS=-Iparsing_dates -Iio -Itodos `pkg-config --cflags --libs libnotify`
 BIN=main
-SRC=main.c pd_parser.c io.c
-OBJS=main.o pd_parser.o io.o
-VPATH=parsing_dates io
-INCLUDE=parsing_dates/parsing_dates.h io/io.h
+SRC=main.c pd_parser.c io.c todos.c
+OBJS=main.o pd_parser.o io.o todos.o
+VPATH=parsing_dates io todos
+INCLUDE=parsing_dates/parsing_dates.h io/io.h todos/todos.h
 
 .PHONY : all clean
 
@@ -17,4 +17,4 @@ run: $(BIN)
 	./$(BIN)
 
 clean: 
-	rm -rf $(TARGET) *.o **/*.o *.gch **/*.gch
+	rm -rf $(BIN) *.o **/*.o *.gch **/*.gch *core*

@@ -11,6 +11,7 @@
 #include "parsing_dates/parsing_dates.h"
 #include "todos/todos.h"
 #include "io/io.h"
+
 int main(int argc, char* argv[])
 {
 
@@ -32,20 +33,21 @@ int main(int argc, char* argv[])
      *
      */
 
+ 
+    Todo t;
+    // 22 + TODO_TITLE_LENGTH string length
+    char title_prompt[22 + todo_title_length()];
+    sprintf(title_prompt, "Enter a title (max %d):", TODO_TITLE_LENGTH);
 
-    printf("Enter a string\n");
-    char* buff = io_getstr();
-    printf("%s\n", buff);
-    printf("%lu\n", strlen(buff));
-    free(buff);
+    if(todo_prompt(&t, 1, title_prompt, "Enter a todo text:", "Enter a reminder date (YYYY-MM-DD):") != 0)
+    {
+        perror("Error while creating a todo\n");
+        return 1;
+    }
+   
+    todo_print(&t);
 
-    printf("Enter another string\n");
-    buff = io_getnstr(20);
-    printf("%s\n", buff);
-    printf("%lu\n", strlen(buff));
-    free(buff);
-    
-
+    todo_free_inner(&t);
     return 0;
 
     /* Sending notifications */
