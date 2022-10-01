@@ -77,3 +77,78 @@ char* io_getstr()
     str[strlen(str) - 1] = '\0'; // strlen - 1 is always a new line 
     return str;
 }
+
+unsigned long int io_trim_str(char** str)
+{
+    unsigned long int n = 0;
+    n += io_trim_str_right(str);
+    n += io_trim_str_left(str);
+    return n;
+}
+
+unsigned long int io_trim_str_left(char** str)
+{
+    char* out_str = NULL;
+    unsigned long int len = strlen(*str);
+    unsigned long int i = len - 1; // -1 to skip '\0'
+    unsigned long int n = 0;
+
+    while((*str)[i] == ' ' || (*str)[i] == '\n')
+    {
+        i--;
+        n++;
+    }
+
+    printf("N IS : %lu\n", n);
+    fflush(stdout);
+    // str: "dusan  \0" -> len 7
+    // i: 2
+    // out: "dusan." len - i = 5
+    // memcpy: to out, from str + i ('d'), size 5
+    // out[len - i] = '\0': "dusan\0"
+    if (n > 0)
+    {
+        out_str = malloc(sizeof(**str) * (len - n + 1));
+        if(out_str == NULL) return -1;
+        memcpy(out_str, *str, len - n);
+        out_str[len - n] = '\0';
+    }
+    else
+    {
+        return 0;
+    }
+
+    free(*str);
+    *str = out_str;
+    return n;
+}
+
+unsigned long int io_trim_str_right(char** str)
+{
+    char* out_str = NULL;
+    unsigned long int len = strlen(*str);
+    unsigned long int i = 0;
+
+    while((*str)[i] == ' ' || (*str)[i] == '\n') i++;
+
+    printf("I IS : %lu\n", i);
+    fflush(stdout);
+    // str: "  dusan\0" -> len 7
+    // i: 2
+    // out: "dusan\0" len - i + 1 = 6
+    // memcpy: to out, from str + i ('d'), size 6
+    if (i > 0)
+    {
+        out_str = malloc(sizeof(**str) * (len - i + 1));
+        if(out_str == NULL) return -1;
+        memcpy(out_str, *str + i, len - i + 1);
+    }
+    else
+    {
+        return 0;
+    }
+
+    free(*str);
+    *str = out_str;
+    return i;
+}

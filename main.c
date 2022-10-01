@@ -1,13 +1,7 @@
-#include <time.h>
-#define _XOPEN_SOURCE
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <unistd.h>
 #include <libnotify/notify.h> 
-#include <libnotify/notification.h>
+#include <string.h>
 #include "parsing_dates/parsing_dates.h"
 #include "todos/todos.h"
 #include "io/io.h"
@@ -32,6 +26,24 @@ int main(int argc, char* argv[])
      *      Make installation script?
      *
      */
+
+    unsigned long int size = 16, n1, n2, n;
+    char* str = malloc(sizeof(char) * size);
+    memset(str, 0, size);
+    strncpy(str, " \n \n dus an  \n ", size - 1);
+    printf("%lu,'%s'\n",strlen(str), str);
+
+    n1 = io_trim_str_right(&str);
+    printf("%lu,'%s'\n",strlen(str), str);
+
+    n2 = io_trim_str_left(&str);
+    printf("%lu,'%s'\n",strlen(str), str);
+    memset(str, 0, size);
+    strncpy(str, " \n \n dus an \n \n ", size - 1);
+    n = io_trim_str(&str);
+    printf("N1 + N2 == N;\n%lu + %lu == %lu\n", n1, n2, n);
+    free(str);
+    return 0;
 
  
     Todo t;

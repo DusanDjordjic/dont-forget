@@ -65,29 +65,26 @@ int todo_prompt(Todo* new_todo, int id, char* title_prompt, char* desc_prompt, c
     
     // Propmt a user to enter a title using title_prompt
     printf("%s", title_prompt);
+    fflush(stdout);
     title = io_getnstr(TODO_TITLE_LENGTH);
-    if(title == NULL)
-    {
-        perror("Error while reading title\n");
-        return 1;
-    }
+    if(title == NULL) return 1;
     
     // Propmt a user to enter a description using desc_prompt
     printf("%s", desc_prompt);
+    fflush(stdout);
     desc = io_getstr();
     if(desc == NULL)
     {
-        perror("Error while reading description\n");
         free(title);
         return 2;
     }
 
     // Propmt a user to enter a date using date_prompt
     printf("%s", date_prompt);
+    fflush(stdout);
     date_string = io_getnstr(80);
     if(date_string == NULL)
     {
-        perror("Error while reading date\n");
         free(title);
         free(desc);
         return 3;
@@ -104,9 +101,8 @@ int todo_prompt(Todo* new_todo, int id, char* title_prompt, char* desc_prompt, c
     }
 
     free(date_string);
-    // Handle Error
 
-    // Send data to todo_create and return created pointer
+    // Populate todo with collected data
     todo_populate(new_todo, id, title, desc, date);
     return 0;
 }
