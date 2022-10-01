@@ -27,6 +27,12 @@ int main(int argc, char* argv[])
      *
      */
 
+
+    char* s = io_getstr();
+    printf("%lu,'%s'\n",strlen(s), s);
+    io_trim_str(&s);
+    printf("%lu,'%s'\n",strlen(s), s);
+    return 0;
     unsigned long int size = 16, n1, n2, n;
     char* str = malloc(sizeof(char) * size);
     memset(str, 0, size);
